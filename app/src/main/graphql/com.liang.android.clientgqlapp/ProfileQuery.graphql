@@ -1,0 +1,8 @@
+query UsersQuery {
+    users {
+        name
+        age
+        id
+        profession
+    }
+}
