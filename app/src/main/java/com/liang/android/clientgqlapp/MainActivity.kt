@@ -1,15 +1,12 @@
 package com.liang.android.clientgqlapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.coroutines.toDeferred
-import com.apollographql.apollo.exception.ApolloException
+import com.liang.android.clientgqlapp.ui.DetailActivity
 import com.liang.android.clientgqlapp.ui.UserRecyclerViewAdapter
 import com.liang.android.clientgqlapp.util.ApolloClient
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,7 +15,9 @@ import kotlinx.coroutines.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var job: Job
-    private val adapter = UserRecyclerViewAdapter()
+    private val adapter = UserRecyclerViewAdapter {
+        onClick(it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,5 +43,11 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         job.cancel()
         super.onDestroy()
+    }
+
+    fun onClick(user: UsersQuery.User) {
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(DetailActivity.USERID_INTENT, user.id)
+        startActivity(intent)
     }
 }

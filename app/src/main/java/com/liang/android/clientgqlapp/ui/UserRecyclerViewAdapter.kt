@@ -9,7 +9,8 @@ import com.liang.android.clientgqlapp.R
 import com.liang.android.clientgqlapp.UsersQuery
 import kotlinx.android.synthetic.main.user_row.view.*
 
-class UserRecyclerViewAdapter : RecyclerView.Adapter<UserRecyclerViewAdapter.UserViewHolder>() {
+class UserRecyclerViewAdapter(val block: (UsersQuery.User) -> Unit)
+    : RecyclerView.Adapter<UserRecyclerViewAdapter.UserViewHolder>() {
 
     private val userList: MutableList<UsersQuery.User> = mutableListOf()
 
@@ -43,7 +44,7 @@ class UserRecyclerViewAdapter : RecyclerView.Adapter<UserRecyclerViewAdapter.Use
 
         init {
             item.setOnClickListener {
-                val userId = userList[adapterPosition].id
+                block.invoke(userList[adapterPosition])
             }
         }
     }
