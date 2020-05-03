@@ -5,4 +5,11 @@
     <string name="profession">Profession</string>
     <string name="hobby">Hobby</string>
     <string name="posts">Posts</string>
+    <string name="name">Name</string>
+    <string name="save_user">Save User</string>
+    <string name="post_comment">Post Comment</string>
+    <string name="hobby_title">Hobby title</string>
+    <string name="hobby_description">Hobby description</string>
+    <string name="save_post_and_hobby">Save post and hobby</string>
+    <string name="add_user_and_hobby">Add user and hobby</string>
 </resources>

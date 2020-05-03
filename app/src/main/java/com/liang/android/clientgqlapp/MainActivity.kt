@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.apollographql.apollo.coroutines.toDeferred
+import com.liang.android.clientgqlapp.ui.AddUserActivity
 import com.liang.android.clientgqlapp.ui.DetailActivity
 import com.liang.android.clientgqlapp.ui.UserRecyclerViewAdapter
 import com.liang.android.clientgqlapp.util.ApolloClient
@@ -24,6 +25,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         rv_users_Id.adapter = adapter
         rv_users_Id.layoutManager = LinearLayoutManager(this)
+        fab.setOnClickListener {
+            val intent = Intent(this, AddUserActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         getUsers()
     }
 
@@ -45,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun onClick(user: UsersQuery.User) {
+    private fun onClick(user: UsersQuery.User) {
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(DetailActivity.USERID_INTENT, user.id)
         startActivity(intent)

@@ -1,0 +1,6 @@
+mutation AddHobby($hobbyTitle: String!, $hobbyDescription: String, $userId: ID!) {
+    createHobby(title: $hobbyTitle, description: $hobbyDescription, userId: $userId) {
+        id
+        title
+    }
+}

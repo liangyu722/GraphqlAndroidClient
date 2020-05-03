@@ -33,6 +33,8 @@ class DetailActivity : AppCompatActivity() {
             }
             userResponse.data?.user?.let {
                 bindUser(it)
+
+                //Verified post and hobby is returning from graphql, cannot be bothered to write adapter.
             }
         }
     }
