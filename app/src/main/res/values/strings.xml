@@ -12,4 +12,5 @@
     <string name="hobby_description">Hobby description</string>
     <string name="save_post_and_hobby">Save post and hobby</string>
     <string name="add_user_and_hobby">Add user and hobby</string>
+    <string name="update_user">Update User</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.liang.android.clientgqlapp.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.apollographql.apollo.coroutines.toDeferred
 import com.liang.android.clientgqlapp.GetuserQuery
 import com.liang.android.clientgqlapp.R
@@ -16,12 +18,39 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private lateinit var job: Job
+    private val postAdapter: PostAdapter by lazy {
+        PostAdapter()
+    }
+    private val hobbyAdapter: HobbyAdapter by lazy {
+        HobbyAdapter()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_main)
         val id = intent.getStringExtra(USERID_INTENT)
         id?.let {
             getUser(it)
+        }
+
+        dets_post_rv.adapter = postAdapter
+        dets_post_rv.layoutManager = LinearLayoutManager(this).apply {
+            this.orientation = LinearLayoutManager.VERTICAL
+        }
+
+        dets_hobby_rv.adapter = hobbyAdapter
+        dets_hobby_rv.layoutManager = LinearLayoutManager(this).apply {
+            this.orientation = LinearLayoutManager.VERTICAL
+        }
+
+        dets_hobby_btn.setOnClickListener {
+            dets_post_rv.visibility = View.GONE
+            dets_hobby_rv.visibility = View.VISIBLE
+        }
+
+        dets_post_btn.setOnClickListener {
+            dets_post_rv.visibility = View.VISIBLE
+            dets_hobby_rv.visibility = View.GONE
         }
     }
 
@@ -33,16 +62,21 @@ class DetailActivity : AppCompatActivity() {
             }
             userResponse.data?.user?.let {
                 bindUser(it)
+                it.posts?.let { posts ->
+                    postAdapter.setList(posts.filterNotNull())
+                }
 
-                //Verified post and hobby is returning from graphql, cannot be bothered to write adapter.
+                it.hobbies?.let { hobbies ->
+                    hobbyAdapter.setList(hobbies.filterNotNull())
+                }
             }
         }
     }
 
     private fun bindUser(user: GetuserQuery.User) {
-        dets_name_tv.text = user.name
-        dets_age_tv.text = user.age.toString()
-        dets_profession_tv.text = user.profession
+        dets_name_tv.setText(user.name)
+        dets_age_tv.setText(user.age.toString())
+        dets_profession_tv.setText(user.profession)
     }
 
     override fun onDestroy() {
