@@ -15,7 +15,7 @@ import kotlinx.coroutines.*
 
 class AddUserActivity : AppCompatActivity() {
 
-    private lateinit var job: Job
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,7 @@ class AddUserActivity : AppCompatActivity() {
 
             val newUser = ApolloClient
                 .instance
-                .mutate(AdduserMutation(name, Integer.parseInt(age), Input.fromNullable(profession)))
+                .mutate(AddUserMutation(name, Integer.parseInt(age), Input.fromNullable(profession)))
                 .toDeferred()
                 .await()
 
@@ -56,7 +56,7 @@ class AddUserActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        job.cancel()
+        job?.cancel()
         super.onDestroy()
     }
 }

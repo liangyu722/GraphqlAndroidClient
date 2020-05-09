@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.coroutines.toDeferred
+import com.liang.android.clientgqlapp.DeleteUserMutation
 import com.liang.android.clientgqlapp.GetuserQuery
 import com.liang.android.clientgqlapp.R
+import com.liang.android.clientgqlapp.UpdateUserMutation
 import com.liang.android.clientgqlapp.util.ApolloClient
 import kotlinx.android.synthetic.main.detail_main.*
 import kotlinx.coroutines.*
@@ -18,6 +21,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private lateinit var job: Job
+    private var updateJob: Job? = null
+    private var deleteJob: Job? = null
     private val postAdapter: PostAdapter by lazy {
         PostAdapter()
     }
@@ -52,6 +57,43 @@ class DetailActivity : AppCompatActivity() {
             dets_post_rv.visibility = View.VISIBLE
             dets_hobby_rv.visibility = View.GONE
         }
+
+        dets_update_user_btn.setOnClickListener {
+            val name = dets_name_tv.text.toString()
+            val age = dets_age_tv.text.toString().toInt()
+            val profession = dets_profession_tv.text.toString()
+            updateUser(id, name, age, profession)
+        }
+
+        dets_deleteuser_btn.setOnClickListener {
+            deleteUser(id)
+        }
+    }
+
+    private fun updateUser(id: String, name: String, age: Int, profession: String) {
+        updateJob = CoroutineScope(Dispatchers.Main).launch {
+            val userResponse = withContext(Dispatchers.IO) {
+                return@withContext ApolloClient
+                    .instance
+                    .mutate(UpdateUserMutation(id, name, age, Input.fromNullable(profession)))
+                    .toDeferred()
+                    .await()
+            }
+            finish()
+        }
+    }
+
+    private fun deleteUser(id: String) {
+        updateJob = CoroutineScope(Dispatchers.Main).launch {
+            val userResponse = withContext(Dispatchers.IO) {
+                return@withContext ApolloClient
+                    .instance
+                    .mutate(DeleteUserMutation(id))
+                    .toDeferred()
+                    .await()
+            }
+            finish()
+        }
     }
 
     private fun getUser(id: String) {
@@ -81,6 +123,8 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         job.cancel()
+        updateJob?.cancel()
+        deleteJob?.cancel()
         super.onDestroy()
     }
 }
